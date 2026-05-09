@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>F1 Precision Leadership — Pre-Season Testing: The Driver's Induction</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0D1B3E;--gold:#C9A84C;--gold2:#E8C55A;--blue:#1A6FB5;--blue2:#1E82D4;--red:#C0392B;--green:#1E7E5E;--purple:#6C3FA8;--panel:#F5F7FA;--panel2:#EEF2F8;--panel3:#E3E9F4;--muted:#6B7FA3}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow',sans-serif;background:var(--navy);color:#fff}
+#shell{display:flex;flex-direction:column;height:100vh}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:54px;flex-shrink:0;background:var(--navy);border-bottom:2px solid var(--gold);position:relative;overflow:hidden}
+#topbar::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:glow 3s infinite}
+@keyframes glow{0%,100%{opacity:.5}50%{opacity:1}}
+.f1b{background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:4px;padding:3px 9px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;color:var(--navy)}
+.tbt{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:2px}
+.tbs{font-size:11px;color:var(--gold);letter-spacing:2px;font-weight:600}
+.pbar{width:140px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:2px;transition:width .8s ease}
+.ppct{font-size:12px;font-weight:700;color:var(--gold);min-width:32px}
+#snav{display:flex;align-items:center;justify-content:center;padding:10px 24px 28px;flex-shrink:0;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.07)}
+.sdw{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer}
+.sdot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;border:2px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.35);transition:all .25s;background:rgba(255,255,255,0.04)}
+.sdot.active{border-color:var(--gold);color:var(--navy);background:var(--gold);box-shadow:0 0 16px rgba(201,168,76,0.4)}
+.sdot.done{border-color:var(--blue);color:#fff;background:var(--blue)}
+.scon{width:48px;height:2px;background:rgba(255,255,255,0.08);margin-top:15px}
+.scon.done{background:var(--blue)}
+.slbl{font-size:9px;color:rgba(255,255,255,0.35);text-align:center;position:absolute;top:36px;white-space:nowrap;letter-spacing:.5px;font-weight:700}
+#content{flex:1;overflow-y:auto;overflow-x:hidden}
+.screen{display:none;width:100%;min-height:100%}
+.screen.active{display:flex;flex-direction:column}
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+#bnav{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;flex-shrink:0;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.07)}
+.nbtn{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;padding:10px 22px;border-radius:5px;cursor:pointer;border:none;transition:all .2s}
+.nnext{background:var(--gold);color:var(--navy)}.nnext:hover{background:var(--gold2);transform:translateY(-1px)}.nnext:disabled{background:rgba(201,168,76,0.2);color:rgba(255,255,255,0.2);cursor:not-allowed;transform:none}
+.nprev{background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.12)}.nprev:hover:not(:disabled){color:#fff}.nprev:disabled{opacity:.25;cursor:not-allowed}
+.ninfo{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:.5px}
+.ey{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;color:var(--gold);margin-bottom:8px}
+.wcard{background:#fff;border-radius:10px;padding:18px 20px;border:1px solid var(--panel3)}
+@keyframes fUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.screen.active>*{animation:fUp .4s ease both}
+.screen.active>*:nth-child(2){animation-delay:.07s}
+.screen.active>*:nth-child(3){animation-delay:.14s}
+
+/* S1 */
+.s1{flex:1;display:grid;grid-template-columns:1fr 300px}
+.s1-main{background:rgba(255,255,255,0.02);padding:28px 32px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-right:1px solid rgba(255,255,255,0.07)}
+.vid-ph{width:100%;max-width:500px;aspect-ratio:16/9;border:2px dashed rgba(201,168,76,0.5);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(255,255,255,0.02);position:relative;overflow:hidden}
+.vid-ph::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 35% 50%,rgba(201,168,76,0.06),transparent 60%)}
+.play-ring{width:60px;height:60px;border-radius:50%;border:2px solid rgba(201,168,76,0.6);background:rgba(201,168,76,0.12);display:flex;align-items:center;justify-content:center;animation:ringPulse 2.5s infinite}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.3)}50%{box-shadow:0 0 0 10px rgba(201,168,76,0)}}
+.play-t{width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:20px solid var(--gold);margin-left:4px}
+.s1-side{background:var(--panel);padding:24px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.lights-out{display:flex;gap:8px;justify-content:center}
+.light{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);transition:all .3s}
+.light.red{background:#e74c3c;box-shadow:0 0 10px rgba(231,76,60,0.6)}
+.light.off{background:rgba(255,255,255,0.06)}
+.welcome-card{background:#fff;border-radius:10px;padding:16px 18px;border:1px solid var(--panel3)}
+.key-msg{background:var(--navy);border-radius:8px;padding:14px 16px;border-left:3px solid var(--gold)}
+.km-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:5px}
+.km-txt{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;font-style:italic}
+.in-this{background:#fff;border-radius:8px;padding:14px 16px;border:1px solid var(--panel3)}
+.it-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:10px}
+.it-item{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--panel3)}
+.it-item:last-child{border-bottom:none}
+.it-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.it-text{font-size:13px;color:#1a2540;line-height:1.4;font-weight:500}
+
+/* S2 */
+.s2{flex:1;display:flex;flex-direction:column;background:var(--panel)}
+.s2-top{background:var(--navy);padding:16px 32px;border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between}
+.s2-body{flex:1;padding:20px 28px;display:flex;gap:16px;overflow:hidden}
+.circuit-grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;overflow-y:auto}
+.ccard{background:#fff;border-radius:10px;padding:16px 18px;border:2px solid var(--panel3);cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.ccard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.12)}
+.ccard.active{border-color:var(--gold)}
+.ccard.locked{opacity:.55;cursor:default}.ccard.locked:hover{transform:none;box-shadow:none}
+.cc-flag{font-size:22px;margin-bottom:8px}
+.cc-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:3px}
+.cc-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;color:var(--navy);line-height:1.1;margin-bottom:6px}
+.cc-topic{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:8px}
+.cc-badge{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:1px;display:inline-block}
+.cb-now{background:var(--blue);color:#fff}
+.cb-next{background:rgba(107,127,163,0.15);color:var(--muted)}
+.cb-bonus{background:rgba(201,168,76,0.15);color:#7a5a0a}
+.cc-lock{position:absolute;top:10px;right:10px;font-size:14px;opacity:.4}
+.circuit-detail{width:280px;flex-shrink:0;background:#fff;border-radius:12px;border:1px solid var(--panel3);padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.cd-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;color:var(--muted)}
+.cd-flag{font-size:36px}
+.cd-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--navy)}
+.cd-sub{font-size:12px;color:var(--muted)}
+.cd-lap{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;background:var(--panel);border-radius:7px;margin-bottom:6px}
+.cl-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:var(--gold);min-width:20px}
+.cl-text{font-size:12px;color:#1a2540;line-height:1.4}
+.cd-earn{background:var(--navy);border-radius:8px;padding:12px 14px}
+.ce-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:6px}
+.ce-item{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.55;display:flex;gap:7px;margin-bottom:4px}
+
+/* S3 */
+.s3{flex:1;display:grid;grid-template-columns:1fr 340px}
+.s3-left{padding:28px 32px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.07)}
+.s3-right{background:var(--panel);padding:24px 22px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.char-reveal{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cr-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.cr-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;flex-shrink:0}
+.cr-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900}
+.cr-role{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:.5px}
+.cr-vid-ph{aspect-ratio:16/9;border:1.5px dashed rgba(255,255,255,0.2);border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.03)}
+.cr-vid-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4)}
+.cr-quote{font-size:12px;color:rgba(255,255,255,0.65);font-style:italic;line-height:1.55;padding:9px 11px;background:rgba(255,255,255,0.05);border-radius:6px;border-left:2px solid}
+.num-section{background:#fff;border-radius:10px;padding:16px 18px;border:1px solid var(--panel3)}
+.ns-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--navy);margin-bottom:10px}
+.num-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px}
+.num-btn{width:100%;aspect-ratio:1;border-radius:6px;border:1.5px solid var(--panel3);background:var(--panel);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center}
+.num-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--panel2)}
+.num-btn.selected{background:var(--navy);border-color:var(--navy);color:var(--gold)}
+.pi-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.pi-input{width:100%;background:var(--panel);border:1px solid var(--panel3);border-radius:6px;padding:9px 12px;font-family:'Barlow',sans-serif;font-size:13px;color:#1a2540;transition:border-color .18s;margin-bottom:10px}
+.pi-input:focus{outline:none;border-color:var(--blue)}
+.pi-input::placeholder{color:var(--muted)}
+.profile-builder{background:#fff;border-radius:10px;padding:16px 18px;border:1px solid var(--panel3)}
+.pb-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--navy);margin-bottom:12px}
+.save-profile{width:100%;padding:10px;background:var(--blue);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;color:#fff;cursor:pointer;transition:all .18s}
+.save-profile:hover{background:var(--blue2)}
+.profile-saved{display:none;background:#eaf7f0;border:1px solid var(--green);border-radius:8px;padding:12px 14px;text-align:center;margin-top:8px}
+.ps-ico{font-size:24px}.ps-t{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--green);margin-top:3px}
+.ps-s{font-size:12px;color:#1a2540;margin-top:3px;line-height:1.5}
+.driver-card-preview{background:var(--navy);border-radius:10px;padding:16px 18px;border:1px solid rgba(255,255,255,0.1)}
+.dcp-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:10px}
+.dcp-inner{background:rgba(255,255,255,0.05);border-radius:8px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.dcp-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--gold);line-height:1;min-width:52px;text-align:center}
+.dcp-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff}
+.dcp-role{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px}
+.dcp-goal{font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px;font-style:italic;line-height:1.5}
+
+/* S4 */
+.s4{flex:1;display:grid;grid-template-columns:1fr 300px}
+.s4-left{padding:24px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;background:rgba(255,255,255,0.02)}
+.s4-right{background:var(--panel);padding:22px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-left:1px solid rgba(255,255,255,0.07)}
+.rulebook{background:#fff;border-radius:12px;border:1px solid var(--panel3);overflow:hidden}
+.rb-header{background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.rb-ico{font-size:22px}
+.rb-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff}
+.rb-sub{font-size:11px;color:var(--gold);letter-spacing:.5px}
+.rb-sec{border-bottom:1px solid var(--panel3);cursor:pointer}
+.rb-sec:last-child{border-bottom:none}
+.rb-sh{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--panel);transition:background .15s}
+.rb-sh:hover{background:var(--panel2)}
+.rb-sh-left{display:flex;align-items:center;gap:10px}
+.rb-sec-ico{font-size:16px}
+.rb-sec-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.5px}
+.rb-arrow{font-size:12px;color:var(--muted);transition:transform .22s}
+.rb-sec.open .rb-arrow{transform:rotate(90deg)}
+.rb-content{display:none;padding:14px 18px;background:#fff}
+.rb-sec.open .rb-content{display:block}
+.rule-item{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
+.ri-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:var(--gold);min-width:18px;flex-shrink:0}
+.ri-text{font-size:13px;color:#1a2540;line-height:1.6}
+.ri-text strong{color:var(--navy);font-weight:600}
+.faq-card{background:#fff;border-radius:10px;border:1px solid var(--panel3);overflow:hidden}
+.faq-header{padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--panel3)}
+.faq-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--navy)}
+.faq-item{border-bottom:1px solid var(--panel3);cursor:pointer}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:13px;color:#1a2540;font-weight:500;transition:background .15s}
+.faq-q:hover{background:var(--panel)}
+.faq-arr{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0;margin-left:8px}
+.faq-item.open .faq-arr{transform:rotate(90deg)}
+.faq-a{display:none;padding:0 16px 12px;font-size:13px;color:#3a4a6a;line-height:1.65}
+.faq-item.open .faq-a{display:block}
+.support-card{background:var(--navy);border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,0.1)}
+.sc-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.sc-item{display:flex;gap:9px;align-items:center;font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:6px}
+.sc-ico{font-size:15px;flex-shrink:0}
+.radio-check{background:#fff;border-radius:10px;padding:16px 18px;border:2px solid var(--gold)}
+.rc-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.rc-sub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.rc-ta{width:100%;background:var(--panel);border:1px solid var(--panel3);border-radius:7px;padding:10px 12px;font-family:'Barlow',sans-serif;font-size:13px;color:#1a2540;resize:none;line-height:1.6;transition:border-color .18s}
+.rc-ta:focus{outline:none;border-color:var(--gold)}
+.rc-ta::placeholder{color:var(--muted)}
+.rc-sub-btn{width:100%;padding:10px;background:var(--gold);border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:1px;color:var(--navy);cursor:pointer;margin-top:8px;transition:all .18s}
+.rc-sub-btn:hover{background:var(--gold2)}
+.pass-section{background:var(--navy);border-radius:10px;padding:16px 18px;border:1px solid rgba(201,168,76,0.3)}
+.pass-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.pass-items{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.pass-item{display:flex;gap:8px;align-items:center}
+.pi-check{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .3s;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:rgba(255,255,255,0.3)}
+.pi-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.pi-label-txt{color:rgba(255,255,255,0.7);font-size:12px;line-height:1.4}
+.unlock-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:2px;color:var(--navy);cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:10px}
+.unlock-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3)}
+.unlock-btn:disabled{background:rgba(201,168,76,0.2);color:rgba(255,255,255,0.3);cursor:not-allowed;transform:none;box-shadow:none}
+.unlocked-state{display:none;text-align:center;padding:16px}
+.us-ico{font-size:40px}.us-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--gold);margin-top:6px}
+.us-sub{font-size:13px;color:rgba(255,255,255,0.7);margin-top:4px;line-height:1.55}
+</style>
+</head>
+<body>
+<div id="shell">
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="f1b">F1</div>
+    <div><div class="tbt">PRECISION LEADERSHIP</div><div class="tbs">GRAND PRIX · WESTON TRAINING</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--gold);border:1px solid rgba(201,168,76,0.4);padding:4px 11px;border-radius:3px;letter-spacing:1px">PRE-SEASON TESTING</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+      <span class="ppct" id="pp">0%</span>
+    </div>
+  </div>
+</div>
+<div id="snav">
+  <div class="sdw" onclick="go(1)"><div class="sdot active" id="d1">1</div><span class="slbl">COUNTDOWN</span></div>
+  <div class="scon" id="c1"></div>
+  <div class="sdw" onclick="go(2)"><div class="sdot" id="d2">2</div><span class="slbl">YOUR TRACK</span></div>
+  <div class="scon" id="c2"></div>
+  <div class="sdw" onclick="go(3)"><div class="sdot" id="d3">3</div><span class="slbl">YOUR CREW</span></div>
+  <div class="scon" id="c3"></div>
+  <div class="sdw" onclick="go(4)"><div class="sdot" id="d4">4</div><span class="slbl">PIT LANE PASS</span></div>
+</div>
+<div id="content">
+
+<!-- S1 -->
+<div class="screen active" id="s1"><div class="s1">
+  <div class="s1-main">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;color:var(--gold);align-self:flex-start;margin-bottom:6px">WELCOME TO THE GRAND PRIX</div>
+    <div style="width:100%;max-width:500px;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <video controls playsinline
+        style="height:380px;width:auto;border-radius:10px;border:2px solid rgba(201,168,76,0.5);box-shadow:0 0 32px rgba(201,168,76,0.15);background:#000"
+        poster="">
+        <source src="PreSeason_Welcome_Video.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold)">RACE DIRECTOR</div>
+        <span style="color:rgba(255,255,255,0.2)">·</span>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4)">1:35 · Race Day Countdown</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,0.3)">LIGHTS OUT — AND AWAY WE GO</div>
+      <div class="lights-out" id="lights">
+        <div class="light" id="l0"></div><div class="light" id="l1"></div><div class="light" id="l2"></div><div class="light" id="l3"></div><div class="light" id="l4"></div>
+      </div>
+      <button onclick="startLights()" id="lights-btn" style="display:inline-flex;align-items:center;gap:7px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:20px;border:1px solid rgba(201,168,76,0.4);background:rgba(201,168,76,0.12);color:var(--gold);cursor:pointer;transition:all .2s">🚦 START LIGHTS SEQUENCE</button>
+    </div>
+  </div>
+  <div class="s1-side">
+    <div class="ey" style="color:var(--navy)">WELCOME</div>
+    <div class="welcome-card">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:var(--navy);margin-bottom:8px">You have been selected to race. 🏎️</div>
+      <div style="font-size:13px;color:#1a2540;line-height:1.65">Welcome to the F1 Precision Leadership Grand Prix — a 12-week programme designed to make you a confident, capable, ILM-recognised emerging leader. Over the next four screens you will set up your driver profile and get your Pit Lane Pass.</div>
+    </div>
+    <div class="key-msg">
+      <div class="km-lbl">RACE DIRECTOR</div>
+      <div class="km-txt">"Leadership is not a title. It is a practice. Over the next 12 weeks, you are going to learn it, test it, and live it. Welcome to the team."</div>
+    </div>
+    <div class="in-this">
+      <div class="it-lbl">IN THIS INDUCTION</div>
+      <div class="it-item"><div class="it-dot" style="background:var(--gold)"></div><div class="it-text">Your Race Day Countdown video</div></div>
+      <div class="it-item"><div class="it-dot" style="background:var(--blue)"></div><div class="it-text">Explore your 12-week race track</div></div>
+      <div class="it-item"><div class="it-dot" style="background:var(--green)"></div><div class="it-text">Meet Samira and Hassan — choose your driver number</div></div>
+      <div class="it-item"><div class="it-dot" style="background:var(--red)"></div><div class="it-text">Driver's Rule Book and Pit Lane Pass — unlock Circuit 1</div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- S2 -->
+<div class="screen" id="s2"><div class="s2">
+  <div class="s2-top">
+    <div><div class="ey" style="margin-bottom:2px">YOUR RACE TRACK</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:1px">7 Circuits · 12 Weeks · Your Grand Prix</div></div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.5);text-align:right;max-width:200px;line-height:1.5">Click any circuit to see what you will learn and earn</div>
+  </div>
+  <div class="s2-body">
+    <div class="circuit-grid" id="circuit-grid"></div>
+    <div class="circuit-detail" id="circuit-detail">
+      <div class="cd-empty"><div style="font-size:36px">🗺️</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--muted)">SELECT A CIRCUIT</div><div style="font-size:12px;color:var(--muted);line-height:1.5">Click any circuit card to see full details</div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- S3 -->
+<div class="screen" id="s3"><div class="s3">
+  <div class="s3-left">
+    <div>
+      <div class="ey">MEET YOUR DRIVERS</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;letter-spacing:1px;margin-bottom:6px">Samira &amp; Hassan are<br>racing alongside you.</div>
+      <div style="font-size:14px;line-height:1.65;color:rgba(255,255,255,0.7)">You will see them throughout every circuit. They are not perfect leaders — they are developing ones, just like you. Watch how they grow, make mistakes, and get better.</div>
+    </div>
+    <div class="char-reveal">
+      <div class="cr-card">
+        <div style="display:flex;align-items:center;gap:10px"><div class="cr-avatar" style="background:var(--blue)">S</div><div><div class="cr-name" style="color:var(--blue2)">Samira</div><div class="cr-role">LEADERSHIP DRIVER</div></div></div>
+        <div class="cr-vid-ph"><div style="font-size:22px">🎬</div><div class="cr-vid-lbl">SAMIRA INTRO VIDEO</div><div style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center;max-width:140px;line-height:1.4">Replace with HeyGen Samira avatar · 60 seconds</div></div>
+        <div class="cr-quote" style="border-left-color:var(--blue)">"Am I actually a leader yet — or just someone with a new job title?"</div>
+      </div>
+      <div class="cr-card">
+        <div style="display:flex;align-items:center;gap:10px"><div class="cr-avatar" style="background:var(--red)">H</div><div><div class="cr-name" style="color:#e05a4b">Hassan</div><div class="cr-role">MANAGEMENT DRIVER</div></div></div>
+        <div class="cr-vid-ph"><div style="font-size:22px">🎬</div><div class="cr-vid-lbl">HASSAN INTRO VIDEO</div><div style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center;max-width:140px;line-height:1.4">Replace with HeyGen Hassan avatar · 60 seconds</div></div>
+        <div class="cr-quote" style="border-left-color:var(--red)">"I got results as an individual. That's what got me promoted. Why change anything?"</div>
+      </div>
+      <div class="cr-card" style="grid-column:span 2">
+        <div style="display:flex;align-items:center;gap:10px"><div class="cr-avatar" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy)">RD</div><div><div class="cr-name" style="color:var(--gold2)">Race Director</div><div class="cr-role">PROGRAMME PRINCIPAL · WESTON TRAINING</div></div></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6">Your Race Director is the experienced voice at the pit wall — the principal who has designed the race, knows every track, and is guiding all drivers to the podium. She will brief you at the start of every lap and debrief you at the end.</div>
+      </div>
+    </div>
+  </div>
+  <div class="s3-right">
+    <div class="num-section">
+      <div class="ns-title">CHOOSE YOUR DRIVER NUMBER</div>
+      <div class="num-grid" id="num-grid"></div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px" id="chosen-num">No number selected yet</div>
+    </div>
+    <div class="profile-builder">
+      <div class="pb-title">BUILD YOUR DRIVER PROFILE</div>
+      <div class="pi-label">YOUR NAME</div>
+      <input class="pi-input" id="pi-name" type="text" placeholder="Your first name or preferred name">
+      <div class="pi-label">YOUR ROLE</div>
+      <input class="pi-input" id="pi-role" type="text" placeholder="e.g. Team Leader, Supervisor, Graduate">
+      <div class="pi-label">WHAT ARE YOU RACING FOR?</div>
+      <input class="pi-input" id="pi-goal" type="text" placeholder="One sentence — what does great leadership mean to you?">
+      <button class="save-profile" onclick="saveProfile()">SAVE MY DRIVER PROFILE</button>
+      <div class="profile-saved" id="profile-saved"><div class="ps-ico">🏎️</div><div class="ps-t">Driver Profile Saved</div><div class="ps-s">Your profile is set. You will appear on the leaderboard from Day 1.</div></div>
+    </div>
+    <div class="driver-card-preview">
+      <div class="dcp-lbl">YOUR DRIVER CARD — LIVE PREVIEW</div>
+      <div class="dcp-inner">
+        <div class="dcp-num" id="dcp-num">#</div>
+        <div><div class="dcp-name" id="dcp-name">Your Name</div><div class="dcp-role" id="dcp-role">Your Role</div><div class="dcp-goal" id="dcp-goal">What you are racing for appears here</div></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- S4 -->
+<div class="screen" id="s4"><div class="s4">
+  <div class="s4-left">
+    <div><div class="ey">DRIVER'S RULE BOOK &amp; PROGRAMME GUIDE</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px">Know the track before you race.</div><div style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6">Everything you need to know about how the programme works. Click each section to expand.</div></div>
+    <div class="rulebook">
+      <div class="rb-header"><div class="rb-ico">📋</div><div><div class="rb-title">Driver's Rule Book</div><div class="rb-sub">F1 Precision Leadership Grand Prix · Weston Training</div></div></div>
+      <div class="rb-sections">
+        <div class="rb-sec" onclick="toggleSec(this)">
+          <div class="rb-sh"><div class="rb-sh-left"><div class="rb-sec-ico">🏎️</div><div class="rb-sec-title">HOW THE PROGRAMME WORKS</div></div><div class="rb-arrow">▶</div></div>
+          <div class="rb-content">
+            <div class="rule-item"><div class="ri-num">1</div><div class="ri-text">The programme runs for <strong>12 weeks</strong> across 6 circuits plus 1 bonus circuit. Each circuit covers a different leadership topic.</div></div>
+            <div class="rule-item"><div class="ri-num">2</div><div class="ri-text">Each circuit has <strong>4 laps</strong>: The Starting Grid, The Technical Turn, The Practice Lap, and The Acceleration Lap.</div></div>
+            <div class="rule-item"><div class="ri-num">3</div><div class="ri-text">A new circuit <strong>unlocks every two weeks</strong> on Monday morning. Complete each circuit to unlock the next.</div></div>
+            <div class="rule-item"><div class="ri-num">4</div><div class="ri-text">Weekly commitment is approximately <strong>2 hours</strong> — flexible and self-paced within each two-week window.</div></div>
+          </div>
+        </div>
+        <div class="rb-sec" onclick="toggleSec(this)">
+          <div class="rb-sh"><div class="rb-sh-left"><div class="rb-sec-ico">✅</div><div class="rb-sec-title">ASSESSMENT AND EVIDENCE</div></div><div class="rb-arrow">▶</div></div>
+          <div class="rb-content">
+            <div class="rule-item"><div class="ri-num">1</div><div class="ri-text"><strong>Pit Stop Quiz</strong> — 8 knowledge questions per circuit. Pass mark is 75% (6/8). Unlimited retakes.</div></div>
+            <div class="rule-item"><div class="ri-num">2</div><div class="ri-text"><strong>Race Day Challenge</strong> — apply your learning to a real person or situation. 250–350 words. Assessed by your tutor within 3 working days.</div></div>
+            <div class="rule-item"><div class="ri-num">3</div><div class="ri-text"><strong>F1 Reflection Log</strong> — three structured prompts every circuit. This is your ILM evidence. Be honest and specific.</div></div>
+          </div>
+        </div>
+        <div class="rb-sec" onclick="toggleSec(this)">
+          <div class="rb-sh"><div class="rb-sh-left"><div class="rb-sec-ico">🤖</div><div class="rb-sec-title">USING AI IN THIS PROGRAMME</div></div><div class="rb-arrow">▶</div></div>
+          <div class="rb-content">
+            <div class="rule-item"><div class="ri-num">1</div><div class="ri-text">Every circuit includes the <strong>Pit Wall Coach</strong> — a live AI coaching bot to accelerate your thinking.</div></div>
+            <div class="rule-item"><div class="ri-num">2</div><div class="ri-text">AI is a <strong>thinking partner</strong>, not an answer machine. Adapt everything to your real context.</div></div>
+            <div class="rule-item"><div class="ri-num">3</div><div class="ri-text"><strong>Never use AI to write your assessment.</strong> Your Reflection Log and Race Day Challenge must be in your own words.</div></div>
+          </div>
+        </div>
+        <div class="rb-sec" onclick="toggleSec(this)">
+          <div class="rb-sh"><div class="rb-sh-left"><div class="rb-sec-ico">🏆</div><div class="rb-sec-title">BADGES, LEADERBOARD AND CERTIFICATION</div></div><div class="rb-arrow">▶</div></div>
+          <div class="rb-content">
+            <div class="rule-item"><div class="ri-num">1</div><div class="ri-text">You earn a <strong>circuit badge</strong> when you pass the quiz and submit the Race Day Challenge.</div></div>
+            <div class="rule-item"><div class="ri-num">2</div><div class="ri-text">The <strong>Podium Leaderboard</strong> tracks all drivers. Points are earned for circuits, reflections, quizzes, and challenges.</div></div>
+            <div class="rule-item"><div class="ri-num">3</div><div class="ri-text">Completing the full programme earns your <strong>ILM Assured Digital Credential</strong> — internationally recognised and shareable on LinkedIn.</div></div>
+          </div>
+        </div>
+        <div class="rb-sec" onclick="toggleSec(this)">
+          <div class="rb-sh"><div class="rb-sh-left"><div class="rb-sec-ico">🤝</div><div class="rb-sec-title">COMMUNITY AND LIVE SESSIONS</div></div><div class="rb-arrow">▶</div></div>
+          <div class="rb-content">
+            <div class="rule-item"><div class="ri-num">1</div><div class="ri-text">Every Thursday — a <strong>live webinar</strong> via Microsoft Teams, approximately 60 minutes.</div></div>
+            <div class="rule-item"><div class="ri-num">2</div><div class="ri-text">Every Friday — a <strong>Pit Stop Reflection</strong> community post sharing one insight from your week.</div></div>
+            <div class="rule-item"><div class="ri-num">3</div><div class="ri-text">The community is a <strong>safe space</strong>. Support your fellow drivers. What is shared here stays here.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s4-right">
+    <div class="faq-card">
+      <div class="faq-header"><div class="faq-title">QUICK ANSWERS</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What if I miss a week?<span class="faq-arr">▶</span></div><div class="faq-a">Each circuit is open for two weeks. If you fall behind, contact your Race Director. Do not disappear — ask for help.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Do I need to be online at set times?<span class="faq-arr">▶</span></div><div class="faq-a">Most of the programme is self-paced and async. The only fixed time is the Thursday live webinar. Everything else can be done when it suits you within the two-week window.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What is ILM Assured?<span class="faq-arr">▶</span></div><div class="faq-a">ILM stands for Institute of Leadership and Management. ILM Assured means this programme has been reviewed and approved as meeting their leadership development standards. Your certificate is internationally recognised.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What language is the programme in?<span class="faq-arr">▶</span></div><div class="faq-a">All content is in English. Subtitles are on all videos. If anything is difficult to understand, let your Race Director know. We want everyone to succeed.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How do I get my ILM certificate?<span class="faq-arr">▶</span></div><div class="faq-a">You receive your ILM Assured Digital Credential once you complete all 6 circuits, pass all quizzes, and submit all Race Day Challenges. Your assessor confirms completion.</div></div>
+    </div>
+    <div class="support-card">
+      <div class="sc-lbl">PIT STOP SUPPORT</div>
+      <div class="sc-item"><div class="sc-ico">📧</div><div>beverley.wilsonsmith@weston.ae</div></div>
+      <div class="sc-item"><div class="sc-ico">📱</div><div>+971 585 580 950</div></div>
+      <div class="sc-item"><div class="sc-ico">💬</div><div>Community: post in the Pit Stop Support channel</div></div>
+      <div class="sc-item"><div class="sc-ico">⏱️</div><div>Response within 1 working day</div></div>
+    </div>
+    <div class="radio-check">
+      <div class="rc-title">📻 Radio Check — Check In On The Radio</div>
+      <div class="rc-sub">Tell the team who you are. Your name, your role, and one thing you want to take away from this programme.</div>
+      <textarea class="rc-ta" id="rc-ta" rows="3" placeholder="Hi team — I'm [name], I work as [role]. I joined this programme because..."></textarea>
+      <button class="rc-sub-btn" onclick="submitRadio()">POST MY RADIO CHECK</button>
+    </div>
+    <div class="pass-section" id="pass-section">
+      <div class="pass-lbl">YOUR PIT LANE PASS</div>
+      <div class="pass-items">
+        <div class="pass-item"><div class="pi-check" id="pc1">1</div><div class="pi-label-txt">Race Day Countdown video watched</div></div>
+        <div class="pass-item"><div class="pi-check" id="pc2">2</div><div class="pi-label-txt">Race track explored</div></div>
+        <div class="pass-item"><div class="pi-check" id="pc3">3</div><div class="pi-label-txt">Driver profile saved with number chosen</div></div>
+        <div class="pass-item"><div class="pi-check" id="pc4">4</div><div class="pi-label-txt">Radio Check posted to the community</div></div>
+      </div>
+      <button class="unlock-btn" id="unlock-btn" onclick="unlockCircuit1()" disabled>🔒 &nbsp;COMPLETE ALL STEPS TO UNLOCK</button>
+      <div class="unlocked-state" id="unlocked">
+        <div class="us-ico">🏁</div>
+        <div class="us-title">PIT LANE PASS EARNED</div>
+        <div class="us-sub">Circuit 1 — Silverstone is now unlocked.<br>Lights out — and away we go. 🇬🇧</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+</div>
+<div id="bnav">
+  <button class="nbtn nprev" id="bp" onclick="prev()" disabled>← PREVIOUS</button>
+  <div class="ninfo" id="ni">PRE-SEASON TESTING · SCREEN 1 OF 4 · RACE DAY COUNTDOWN</div>
+  <button class="nbtn nnext" id="bn" onclick="nxt()">NEXT →</button>
+</div>
+</div>
+<script>
+var cur=1,tot=4,vis=[true,false,false,false];
+var labs=["PRE-SEASON TESTING · SCREEN 1 OF 4 · RACE DAY COUNTDOWN","PRE-SEASON TESTING · SCREEN 2 OF 4 · YOUR RACE TRACK","PRE-SEASON TESTING · SCREEN 3 OF 4 · MEET YOUR CREW","PRE-SEASON TESTING · SCREEN 4 OF 4 · PIT LANE PASS"];
+function ui(){
+  for(var i=1;i<=tot;i++){
+    document.getElementById('s'+i).classList.toggle('active',i===cur);
+    var d=document.getElementById('d'+i);
+    d.className='sdot'+(i===cur?' active':vis[i-1]?' done':'');
+    d.textContent=vis[i-1]&&i!==cur?'✓':i;
+  }
+  for(var j=1;j<tot;j++){var c=document.getElementById('c'+j);if(c)c.className='scon'+(vis[j]?' done':'');}
+  var pct=Math.round(((cur-1)/tot)*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pp').textContent=pct+'%';
+  document.getElementById('ni').textContent=labs[cur-1];
+  document.getElementById('bp').disabled=cur===1;
+  document.getElementById('bn').textContent=cur===tot?'UNLOCK CIRCUIT 1 →':'NEXT →';
+  if(cur>=2)markPass(1);
+  if(cur>=3)markPass(2);
+}
+function go(n){if(!vis[n-1]&&n>cur)return;cur=n;vis[cur-1]=true;ui();document.getElementById('content').scrollTop=0;}
+function nxt(){if(cur<tot){cur++;vis[cur-1]=true;ui();document.getElementById('content').scrollTop=0;}}
+function prev(){if(cur>1){cur--;ui();document.getElementById('content').scrollTop=0;}}
+function toast(msg){
+  var t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#0D1B3E;border:1px solid rgba(201,168,76,0.5);color:rgba(255,255,255,0.9);font-family:Barlow,sans-serif;font-size:12px;padding:9px 18px;border-radius:20px;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';},2800);
+}
+var lightsGone=false;
+function startLights(){
+  if(lightsGone)return;
+  lightsGone=true;
+  var btn=document.getElementById('lights-btn');btn.disabled=true;
+  [0,400,800,1200,1600].forEach(function(d,i){setTimeout(function(){document.getElementById('l'+i).classList.add('red');},d);});
+  setTimeout(function(){
+    for(var i=0;i<5;i++){document.getElementById('l'+i).classList.remove('red');document.getElementById('l'+i).classList.add('off');}
+    btn.textContent='🏎️ AND AWAY WE GO!';
+    toast('🏁 Lights out — welcome to the Grand Prix!');
+    markPass(0);
+  },3200);
+}
+var CIRCUITS=[
+  {flag:'🇬🇧',num:'C1',title:'Silverstone',topic:'Leading Self Before Leading Others',status:'NOW',badge:'cb-now',
+   laps:['The Starting Grid — Welcome, research evidence, readiness self-check','The Technical Turn — Leadership vs management, Situational Leadership model','The Practice Lap — Style diagnostic, identity statement, decision challenge','The Acceleration Lap — AI coach, reflection log, quiz, Race Day Challenge'],
+   earn:['Leadership Style Diagnostic — full style profile','Leadership Identity Statement','Circuit 1 Silverstone Badge','Pit Stop Quiz pass (6/8)','Race Day Challenge — assessed by your tutor']},
+  {flag:'🇧🇭',num:'C2',title:'Bahrain',topic:'Communicating As a Leader',status:'WEEK 3',badge:'cb-next',
+   laps:['Welcome and research — why communication is a leadership skill','Structured communication frameworks','Active listening, feedback, difficult conversations','Acceleration Lap — AI communication coach, reflection, quiz, challenge'],
+   earn:['Communication framework toolkit','Bahrain Circuit Badge','Feedback conversation planner']},
+  {flag:'🇲🇨',num:'C3',title:'Monaco',topic:'Personal Productivity and AI',status:'WEEK 5',badge:'cb-next',
+   laps:['Welcome and research — the productivity problem for new leaders','Prioritisation frameworks','Workflow design and AI productivity tools','Acceleration Lap — AI productivity coach, reflection, quiz, challenge'],
+   earn:['Weekly leadership planner','Monaco Circuit Badge','AI productivity prompt toolkit']},
+  {flag:'🇮🇹',num:'C4',title:'Monza',topic:'Problem Solving and Decision-Making',status:'WEEK 7',badge:'cb-next',
+   laps:['Welcome and research — why leaders make bad decisions','Root cause analysis and problem definition','Decision models under pressure','Acceleration Lap — AI decision coach, reflection, quiz, challenge'],
+   earn:['Root cause analysis canvas','Monza Circuit Badge','Decision-making framework']},
+  {flag:'🇸🇦',num:'C5',title:'Jeddah',topic:'Building and Leading Teams',status:'WEEK 9',badge:'cb-next',
+   laps:['Welcome and research — what makes teams perform','Team roles, strengths, and dynamics','Trust, collaboration, and accountability tools','Acceleration Lap — AI team coach, reflection, quiz, challenge'],
+   earn:['Team health canvas','Jeddah Circuit Badge','Team roles planner']},
+  {flag:'🇦🇪',num:'C6',title:'Yas Island',topic:'Managing Performance',status:'WEEK 11',badge:'cb-next',
+   laps:['Welcome and research — the performance conversation most leaders avoid','Goal setting, expectations, and the 1:1 structure','Feedback tools and low-performance conversations','Acceleration Lap — AI performance coach, reflection, quiz, challenge'],
+   earn:['1:1 conversation framework','Yas Island Circuit Badge','Performance conversation planner','ILM Assured Digital Credential']},
+  {flag:'🇦🇺',num:'BO',title:'Albert Park',topic:'Emotional Intelligence — BONUS',status:'BONUS',badge:'cb-bonus',
+   laps:['Welcome and research — the EQ gap in leadership','Self-awareness and self-management tools','Empathy, social skills, interpersonal behaviour','Acceleration Lap — AI EQ coach, reflection, quiz, challenge'],
+   earn:['EQ self-assessment','Albert Park Bonus Badge','AI empathy prompt toolkit']},
+];
+function buildCircuits(){
+  var g=document.getElementById('circuit-grid');g.innerHTML='';
+  CIRCUITS.forEach(function(c,i){
+    var d=document.createElement('div');
+    d.className='ccard'+(c.status==='NOW'?' active':' locked');
+    d.innerHTML='<div class="cc-flag">'+c.flag+'</div><div class="cc-num" style="color:var(--muted)">'+c.num+'</div><div class="cc-title">'+c.title+'</div><div class="cc-topic">'+c.topic+'</div><span class="cc-badge '+c.badge+'">'+c.status+'</span>'+(i>0?'<div class="cc-lock">🔒</div>':'');
+    d.onclick=function(){selectC(c,d);};
+    g.appendChild(d);
+  });
+  selectC(CIRCUITS[0],g.children[0]);
+}
+function selectC(c,el){
+  document.querySelectorAll('.ccard').forEach(function(cc){cc.classList.remove('active');});
+  el.classList.add('active');
+  var d=document.getElementById('circuit-detail');
+  d.innerHTML='<div class="cd-flag">'+c.flag+'</div><div class="cd-title">'+c.title+'</div><div class="cd-sub">'+c.topic+' · '+c.status+'</div>'
+    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);margin:10px 0 6px">4 LAPS</div>'
+    +c.laps.map(function(l,i){return '<div class="cd-lap"><div class="cl-num">L'+(i+1)+'</div><div class="cl-text">'+l+'</div></div>';}).join('')
+    +'<div class="cd-earn"><div class="ce-lbl">WHAT YOU EARN</div>'
+    +c.earn.map(function(e){return '<div class="ce-item"><span>🏅</span><span>'+e+'</span></div>';}).join('')+'</div>';
+}
+buildCircuits();
+var NUMBERS=[1,3,5,7,11,14,16,19,22,25,33,44,55,63,77,81,99,4,6,8];
+var selectedNum=null;
+function buildNumbers(){
+  var g=document.getElementById('num-grid');g.innerHTML='';
+  NUMBERS.forEach(function(n){
+    var b=document.createElement('button');b.className='num-btn';b.textContent=n;
+    b.onclick=function(){selectNum(n,b);};
+    g.appendChild(b);
+  });
+}
+function selectNum(n,btn){
+  document.querySelectorAll('.num-btn').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');selectedNum=n;
+  document.getElementById('chosen-num').textContent='You have chosen #'+n;
+  document.getElementById('dcp-num').textContent='#'+n;
+  updateCard();
+}
+buildNumbers();
+function updateCard(){
+  document.getElementById('dcp-name').textContent=document.getElementById('pi-name').value||'Your Name';
+  document.getElementById('dcp-role').textContent=document.getElementById('pi-role').value||'Your Role';
+  document.getElementById('dcp-goal').textContent=document.getElementById('pi-goal').value||'What you are racing for appears here';
+}
+['pi-name','pi-role','pi-goal'].forEach(function(id){document.getElementById(id).addEventListener('input',updateCard);});
+function saveProfile(){
+  if(!document.getElementById('pi-name').value.trim()){toast('Please enter your name first');return;}
+  if(!selectedNum){toast('Please choose a driver number first');return;}
+  document.getElementById('profile-saved').style.display='block';
+  toast('Driver profile saved — #'+selectedNum+' '+document.getElementById('pi-name').value.trim());
+  markPass(2);checkUnlock();
+}
+var passState=[false,false,false,false];
+function markPass(idx){
+  if(passState[idx])return;
+  passState[idx]=true;
+  var el=document.getElementById('pc'+(idx+1));
+  if(el){el.className='pi-check done';el.textContent='✓';}
+  checkUnlock();
+}
+function checkUnlock(){
+  if(passState[0]&&passState[1]&&passState[2]&&passState[3]){
+    var btn=document.getElementById('unlock-btn');
+    btn.disabled=false;
+    btn.innerHTML='🏁 &nbsp;UNLOCK CIRCUIT 1 — SILVERSTONE';
+  }
+}
+function submitRadio(){
+  var text=document.getElementById('rc-ta').value.trim();
+  if(!text){toast('Please write your Radio Check first');return;}
+  document.getElementById('rc-ta').disabled=true;
+  var btn=document.querySelector('.rc-sub-btn');
+  btn.disabled=true;btn.textContent='RADIO CHECK POSTED ✓';btn.style.background='var(--green)';
+  toast('📻 Radio Check posted — your team can hear you!');
+  markPass(3);
+}
+function unlockCircuit1(){
+  if(!passState[0]||!passState[1]||!passState[2]||!passState[3]){toast('Complete all four steps first');return;}
+  document.getElementById('unlock-btn').style.display='none';
+  document.getElementById('unlocked').style.display='block';
+  document.getElementById('pf').style.width='100%';document.getElementById('pp').textContent='100%';
+  toast('🏁 Pit Lane Pass earned — Circuit 1 is unlocked!');
+  try{if(typeof API!=='undefined'){API.LMSSetValue('cmi.core.lesson_status','completed');API.LMSCommit('');}}catch(e){}
+  try{if(typeof window.API_1484_11!=='undefined'){window.API_1484_11.SetValue('cmi.completion_status','completed');window.API_1484_11.Commit('');}}catch(e){}
+}
+function toggleSec(el){var was=el.classList.contains('open');document.querySelectorAll('.rb-sec').forEach(function(s){s.classList.remove('open');});if(!was)el.classList.add('open');}
+function toggleFaq(el){el.classList.toggle('open');}
+ui();
+</script>
+</body>
+</html>
